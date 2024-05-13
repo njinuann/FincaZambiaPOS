@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>POS Narrations</comment>
+        <entry key="31">POS Balance Inquiry [{ACCESSCODE}]</entry></entry>	
+	<entry key="38">POS Mini-Statement [{ACCESSCODE}]</entry>
+	<entry key="40">POS Transfer [{ACCOUNT}->{CONTRA}]</entry>
+	<entry key="21">POS Cash Deposit [{ACCESSCODE}]</entry>		
+	<entry key="01">POS Cash Withdrawal [{ACCESSCODE}]</entry>
+	<entry key="03">POS Off-us Cash Advance [{ACCESSCODE}]</entry>
+</properties>			

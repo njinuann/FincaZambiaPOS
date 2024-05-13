@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>PHilae Iso Codes</comment>
+<entry key="0">00</entry>  
+<entry key="00">00</entry>   
+<entry key="EICODE_0018">00</entry>
+<entry key="EICODE_0009">12</entry>
+<entry key="EICODE_0006">14</entry>
+<entry key="EICODE_0024">14</entry>
+<entry key="EICODE_0025">14</entry>
+<entry key="EICODE_0026">14</entry>
+<entry key="EICODE_0027">14</entry>
+<entry key="EICODE_0022">58</entry>
+<entry key="EICODE_0007">03</entry>
+<entry key="EICODE_0002">13</entry>
+<entry key="EICODE_0004">12</entry>
+<entry key="EICODE_0014">39</entry>
+<entry key="EICODE_0034">57</entry>
+<entry key="EICODE_0039">26</entry>
+<entry key="EICODE_0044">26</entry>
+<entry key="ACCOUNT_0002">25</entry>
+<entry key="ACCOUNT_0096">53</entry>
+<entry key="ACCOUNT_0145">53</entry>
+<entry key="PE_0200">45</entry>
+<entry key="PE_1113">45</entry>
+<entry key="XAPI_COMMON_0023">45</entry>
+<entry key="EICODE_0016">91</entry>
+<entry key="EICODE_0026">52</entry>
+<entry key="EICODE_0096">96</entry>
+<entry key="PE_0910">51</entry>
+<entry key="PE_2042">51</entry>
+<entry key="EICODE_0043">58</entry>
+<entry key="EICODE_0045">26</entry>
+<entry key="EICODE_0046">26</entry>
+<entry key="EICODE_0003">91</entry>
+<entry key="EICODE_0030">61</entry>
+<entry key="XAPI_COMMON_0015">40</entry>
+<entry key="ACCOUNT_0096">25</entry>
+<entry key="EICODE_0010">22</entry>
+<entry key="PE_2113">26</entry>
+</properties>

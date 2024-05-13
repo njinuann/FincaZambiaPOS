@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Mobile Narrations</comment>
+    <entry key="311000">Mobile Balance Inquiry [{ACCOUNT}]</entry>
+	<entry key="312000">Mobile Balance Inquiry [{ACCOUNT}]</entry>
+	<entry key="311010">Mobile Balance Inquiry [{ACCOUNT}]</entry>
+	<entry key="311020">Mobile Balance Inquiry [{ACCOUNT}]</entry>
+	<entry key="312020">Mobile Balance Inquiry [{ACCOUNT}]</entry>
+	<entry key="312010">Mobile Balance Inquiry [{ACCOUNT}]</entry>	
+	<entry key="311000">Mobile Mini-Statement [{ACCOUNT}]</entry>
+	<entry key="312000">Mobile Mini-Statement [{ACCOUNT}]</entry>
+	<entry key="311010">Mobile Mini-Statement [{ACCOUNT}]</entry>
+	<entry key="311020">Mobile Mini-Statement [{ACCOUNT}]</entry>
+	<entry key="312020">Mobile Mini-Statement [{ACCOUNT}]</entry>
+	<entry key="312010">Mobile Mini-Statement [{ACCOUNT}]</entry>	
+	<entry key="403000">Mobile Transfer [{ACCOUNT}->{CONTRA}]</entry>
+	<entry key="403010">Mobile Transfer [{ACCOUNT}->{CONTRA}]</entry>
+	<entry key="403020">Mobile Transfer [{ACCOUNT}->{CONTRA}]</entry>	
+	<entry key="404000">Mobile InterTransfer [{ACCOUNT}->{CONTRA}]</entry>
+	<entry key="404010">Mobile InterTransfer [{ACCOUNT}->{CONTRA}]</entry>
+	<entry key="312010">Mobile InterTransfer [{ACCOUNT}->{CONTRA}]</entry>		
+	<entry key="034002">Zamtel Airtime Purchase [{ACCOUNT}]</entry>
+	<entry key="034003">Vodafone Airtime Purchase [{ACCOUNT}]</entry>	
+	<entry key="036000">MTN Wallet to Bank [{ACCOUNT}]</entry>
+	<entry key="036001">MTN Bank To Wallet [{ACCOUNT}]</entry>
+	<entry key="036002">Airtel Wallet to Bank [{ACCOUNT}]</entry>
+	<entry key="036003">Airtel Bank To Wallet [{ACCOUNT}]</entry>
+	<entry key="036004">Zamtel Wallet to Bank [{ACCOUNT}]</entry>
+	<entry key="036005">Zamtel Bank To Wallet [{ACCOUNT}]</entry>	
+	<entry key="035000">Bills Payment [{ACCOUNT}]</entry>	
+	<entry key="036001">MTN Bank To Wallet [{ACCOUNT}]</entry>
+	<entry key="036002">Zamtel Airtime Purchase [{ACCOUNT}]</entry>
+	<entry key="034003">Vodafone Airtime Purchase [{ACCOUNT}]</entry>
+	<entry key="034002">Zamtel Airtime Purchase [{ACCOUNT}]</entry>
+	<entry key="034003">Vodafone Airtime Purchase [{ACCOUNT}]</entry>
+        <entry key="410000">Token Charge Query [{ACCOUNT}]</entry>
+        <entry key="420000">Channel Customer attachment [{ACCOUNT}] -[{ACCESSCODE}]</entry>
+</properties>			

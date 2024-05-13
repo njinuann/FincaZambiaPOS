@@ -1,0 +1,9 @@
+<server name="Mobile" class="org.jpos.q2.iso.QServer" logger="mobilelogger">
+    <attr name="port" type="java.lang.Integer">5060</attr>
+    <channel name="Mobile.channel" class="org.jpos.iso.channel.PostChannel" 
+                 packager="org.jpos.iso.packager.GenericPackager" logger="mobilelogger">
+        <property name="packager-config" value="pack/pospack.xml"/>
+        <property name="timeout" value="1800000"/>
+    </channel>
+    <request-listener class="Mobile.TXNListenerMOB" logger="logger"/>
+</server>

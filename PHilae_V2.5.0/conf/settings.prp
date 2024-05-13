@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>PHilae Properties</comment>
+<entry key="smtpHost">smtp.gmail.com</entry>
+<entry key="SuspendMOB">N</entry>
+<entry key="CMSchemaName">CHANNELMANAGER_MGR</entry>
+<entry key="CMSchemaURL">jdbc:oracle:thin:@192.168.1.11:1521/PDBFINCA</entry>
+<entry key="emailSubject">Account Statement</entry>
+<entry key="PaymentsWsdlURL">http://10.64.1.41:3950/ruby/PMTService?wsdl</entry>
+<entry key="XapiUser">biKsgfG84Onp9zM0zF2huA==</entry>
+<entry key="SuspendPOS">N</entry>
+<entry key="senderAlias">Neptune Software</entry>
+<entry key="smtpPassword">Dz2RxAMc5qOGx1eg38h9Ow==</entry>
+<entry key="CoreBankingWsContext">http://192.168.1.11:8001/supernovaws/|http://192.168.1.11:8001/supernovaws/</entry>
+<entry key="sendStatementAllowedId">34</entry>
+<entry key="reportEmailAddress">alexnjinu@neptunesoftwaregroup.com</entry>
+<entry key="smtpUsername">njinann@gmail.com</entry>
+<entry key="CMSchemaPassword">k6MjR8pvTyRrwjLHPRk5FA==</entry>
+<entry key="JdbcDriverName">oracle.jdbc.driver.OracleDriver</entry>
+<entry key="CoreSchemaName">MIGRATION</entry>
+<entry key="XapiPassword">ACdFgyoXow8uEp5NQ6xqXQ==</entry>
+<entry key="EnableDebug">N</entry>
+<entry key="smtpAuth">True</entry>
+</properties>

@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="e-statement" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" backcolor="#DDEBED" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#BFDBDE" fill="Solid" pattern=""/>
+		</conditionalStyle>
+	</style>
+	<style name="Balance" mode="Transparent" backcolor="#DDEBED" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{CURBAL}.doubleValue() < 0]]></conditionExpression>
+			<style mode="Transparent" forecolor="#FF0000" fill="Solid" pattern="" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{CURBAL}.doubleValue() >= 0]]></conditionExpression>
+			<style mode="Transparent" forecolor="#0000FF" fill="Solid" pattern="" fontName="Arial" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="AcctNoParam" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT sAccountNo AcctNo, to_date(dtEndDt,'dd/mm/yyy') StatementDt, sName1 Name, sCurrency Currency, sAcctType AcctType, (sAddressLine1 ||' ' ||sAddressLine2) Address,
+NVL(((select NVL(nCurBal,0) from dp_stmt where sAccountNo = $P{AcctNoParam} and nCount = (select max(nCount) from dp_stmt where sAccountNo = $P{AcctNoParam})) + (select NVL(sum(nAmt),0) from dp_stmt where sAccountNo = $P{AcctNoParam} and nDebitCredit > 0) - (select NVL(sum(nAmt),0) from dp_stmt where sAccountNo = $P{AcctNoParam} and nDebitCredit = 0)),0) OpenBal,
+NVL((select NVL(sum(nAmt),0) from dp_stmt where sAccountNo = $P{AcctNoParam} and nDebitCredit = 0),0) TotalCR,
+NVL((select NVL(sum(nAmt),0) from dp_stmt where sAccountNo = $P{AcctNoParam} and nDebitCredit > 0),0) TotalDR,
+NVL((select NVL(nCurBal,0) from dp_stmt where sAccountNo = $P{AcctNoParam} and nCount = (select max(nCount) from dp_stmt where sAccountNo = $P{AcctNoParam})),0) CloseBal,
+to_date(dtEffectiveDt,'dd/mm/yyy') TranDate, sDescription TranDetails, NVL(to_char(nCheckNo), '') Reference,
+nAmt Amount, nvl(nCurBal,0) CurBal, nDebitCredit DRCR
+FROM   dp_stmt where sAccountNo = $P{AcctNoParam} ORDER BY nCount ASC]]>
+	</queryString>
+	<field name="ACCTNO" class="java.lang.String"/>
+	<field name="STATEMENTDT" class="java.sql.Timestamp"/>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="CURRENCY" class="java.lang.String"/>
+	<field name="ACCTTYPE" class="java.lang.String"/>
+	<field name="ADDRESS" class="java.lang.String"/>
+	<field name="OPENBAL" class="java.math.BigDecimal"/>
+	<field name="TOTALCR" class="java.math.BigDecimal"/>
+	<field name="TOTALDR" class="java.math.BigDecimal"/>
+	<field name="CLOSEBAL" class="java.math.BigDecimal"/>
+	<field name="TRANDATE" class="java.sql.Timestamp"/>
+	<field name="TRANDETAILS" class="java.lang.String"/>
+	<field name="REFERENCE" class="java.lang.String"/>
+	<field name="AMOUNT" class="java.lang.Float"/>
+	<field name="CURBAL" class="java.math.BigDecimal"/>
+	<field name="DRCR" class="java.math.BigDecimal"/>
+	<variable name="amtVar" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[new java.math.BigDecimal($F{AMOUNT})]]></variableExpression>
+	</variable>
+	<variable name="crVar" class="java.lang.String">
+		<variableExpression><![CDATA[($F{DRCR}.toString().equals("0") && $V{amtVar}.doubleValue() > 0) ? (new java.text.DecimalFormat("###,##0.00")).format($V{amtVar}) : ""]]></variableExpression>
+	</variable>
+	<variable name="drVar" class="java.lang.String">
+		<variableExpression><![CDATA[($F{DRCR}.toString().equals("1") && $V{amtVar}.doubleValue() > 0) ? (new java.text.DecimalFormat("###,##0.00")).format($V{amtVar}) : ""]]></variableExpression>
+	</variable>
+	<title>
+		<band height="225" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="802" height="111"/>
+				<imageExpression><![CDATA["mobile/images/finca_title.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="0" y="115" width="337" height="20" forecolor="#0000FF"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Account Statement for A/C No]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" x="337" y="115" width="123" height="20" forecolor="#CC0033"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $F{ACCTNO}.toString()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="460" y="115" width="35" height="20" forecolor="#0000FF"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[ as at]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="495" y="115" width="91" height="20" forecolor="#CC0033"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + (new java.text.SimpleDateFormat("dd-MMM-yyyy")).format($F{STATEMENTDT})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="586" y="115" width="216" height="20" forecolor="#0000FF"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="13" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="0" y="145" width="98" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Account Name]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="98" y="145" width="478" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="0" y="163" width="98" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[A/C Currency]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="98" y="163" width="478" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CURRENCY}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="0" y="181" width="98" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Account Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="0" y="199" width="98" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Postal Address]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="98" y="199" width="478" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADDRESS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="576" y="145" width="113" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Opening Balance]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="689" y="145" width="113" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+					<paragraph spacingAfter="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{OPENBAL})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="576" y="163" width="113" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Total Credits]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="689" y="163" width="113" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+					<paragraph spacingAfter="1"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{TOTALCR})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="576" y="181" width="113" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Total Debits]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="689" y="181" width="113" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{TOTALDR})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Column header" x="576" y="199" width="113" height="18" forecolor="#0000FF"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Closing Balance]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="689" y="199" width="113" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{CLOSEBAL})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="98" y="181" width="478" height="18" forecolor="#FA5B5B"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.5" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.5" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.5" lineColor="#0000FF"/>
+				</box>
+				<textElement>
+					<font fontName="Arial" size="13" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ACCTTYPE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean(($V{PAGE_NUMBER}).intValue() > 1)]]></printWhenExpression>
+			<image>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="1" width="802" height="62">
+					<printWhenExpression><![CDATA[new Boolean(($V{PAGE_NUMBER}).intValue() > 1)]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["mobile/images/page_header.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="0" y="0" width="98" height="18" forecolor="#FFFFFF" backcolor="#CC0033"/>
+				<box leftPadding="5" rightPadding="5">
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="98" y="0" width="289" height="18" forecolor="#FFFFFF" backcolor="#CC0033"/>
+				<box leftPadding="5" rightPadding="5">
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Transaction Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="387" y="0" width="80" height="18" forecolor="#FFFFFF" backcolor="#CC0033"/>
+				<box leftPadding="5" rightPadding="5">
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Reference]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="467" y="0" width="111" height="18" forecolor="#FFFFFF" backcolor="#CC0033"/>
+				<box leftPadding="5" rightPadding="5">
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[DR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="689" y="0" width="113" height="18" forecolor="#FFFFFF" backcolor="#CC0033"/>
+				<box leftPadding="5" rightPadding="5">
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" mode="Opaque" x="578" y="0" width="111" height="18" forecolor="#FFFFFF" backcolor="#CC0033"/>
+				<box leftPadding="5" rightPadding="5">
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[CR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="0" width="802" height="16"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="98" y="0" width="289" height="16"/>
+					<box leftPadding="5" rightPadding="5">
+						<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+						<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{TRANDETAILS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="387" y="0" width="80" height="16"/>
+					<box leftPadding="5" rightPadding="5">
+						<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+						<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{REFERENCE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="467" y="0" width="111" height="16" forecolor="#FF0000"/>
+					<box leftPadding="5" rightPadding="5">
+						<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+						<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{drVar}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Balance" positionType="Float" x="689" y="0" width="113" height="16" backcolor="#CCFFCC"/>
+					<box leftPadding="5" rightPadding="5">
+						<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+						<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isBold="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{CURBAL})]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" positionType="Float" x="578" y="0" width="111" height="16" forecolor="#0000FF"/>
+					<box leftPadding="5" rightPadding="5">
+						<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+						<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="10" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{crVar}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" x="0" y="0" width="98" height="16"/>
+				<box leftPadding="5" rightPadding="5">
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.SimpleDateFormat("dd-MMM-yyyy")).format($F{TRANDATE})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="802" height="20" forecolor="#D0B48E" backcolor="#0000FF"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="454" y="1" width="40" height="18" forecolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Arial" size="11" isBold="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="277" y="1" width="177" height="18" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="11" isBold="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Finca ZM E-Statement Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" mode="Opaque" x="578" y="2" width="111" height="18" forecolor="#0000FF" backcolor="#CCFFCC"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{TOTALCR})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement style="Balance" positionType="Float" mode="Opaque" x="689" y="2" width="113" height="18" backcolor="#CCFFCC"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{CLOSEBAL})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="Detail" positionType="Float" mode="Opaque" x="467" y="2" width="111" height="18" forecolor="#FF0000" backcolor="#CCFFCC"/>
+				<box leftPadding="5" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(new java.text.DecimalFormat("###,##0.00")).format($F{TOTALDR})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="387" y="2" width="80" height="18" forecolor="#0000FF" backcolor="#CCFFCC"/>
+				<box leftPadding="5" rightPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
